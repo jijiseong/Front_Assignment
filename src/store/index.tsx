@@ -15,16 +15,16 @@ interface ItemContextType {
   setItemCollection: Dispatch<React.SetStateAction<ItemCollectionType>>;
 }
 
-const getItems = (count: number) =>
+const getItems = (id: number, count: number) =>
   Array.from({ length: count }, (v, k) => k).map((k) => ({
-    id: `item-${k}`,
-    content: `item ${k}`,
+    id: `item-${id}-${k}`,
+    content: `item ${id}-${k}`,
   }));
 
 const initialState: ItemCollectionType = {
-  [BOARD_ID.fisrt]: getItems(10),
-  [BOARD_ID.second]: getItems(10),
-  [BOARD_ID.third]: getItems(10),
+  [BOARD_ID.fisrt]: getItems(1, 10),
+  [BOARD_ID.second]: getItems(2, 10),
+  [BOARD_ID.third]: getItems(3, 10),
 };
 
 const ItemContext = createContext<ItemContextType | undefined>(undefined);
