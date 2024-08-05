@@ -1,3 +1,4 @@
+import { DraggableLocation } from 'react-beautiful-dnd';
 import { ItemType } from './type';
 
 export const reorder = (
@@ -11,16 +12,27 @@ export const reorder = (
   return result;
 };
 
-// const move = (source, destination, droppableSource, droppableDestination) => {
-//   const sourceClone = Array.from(source);
-//   const destClone = Array.from(destination);
-//   const [removed] = sourceClone.splice(droppableSource.index, 1);
+export const move = ({
+  source,
+  destination,
+  droppableSource,
+  droppableDestination,
+}: {
+  source: ItemType[];
+  destination: ItemType[];
+  droppableSource: DraggableLocation;
+  droppableDestination: DraggableLocation;
+}) => {
+  const sourceClone = Array.from(source);
+  const destClone = Array.from(destination);
+  const [removed] = sourceClone.splice(droppableSource.index, 1);
 
-//   destClone.splice(droppableDestination.index, 0, removed);
+  destClone.splice(droppableDestination.index, 0, removed);
 
-//   const result = {};
-//   result[droppableSource.droppableId] = sourceClone;
-//   result[droppableDestination.droppableId] = destClone;
+  const result = {
+    [droppableSource.droppableId]: sourceClone,
+    [droppableDestination.droppableId]: destClone,
+  };
 
-//   return result;
-// };
+  return result;
+};

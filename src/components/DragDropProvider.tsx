@@ -3,46 +3,50 @@ import {
   DragDropContext,
   OnDragEndResponder,
   OnDragStartResponder,
+  OnDragUpdateResponder,
 } from 'react-beautiful-dnd';
 import { useItems } from '../store/ItemProvider';
-import { reorder } from '../utils';
-import { BOARD_ID } from '../constants/dnd';
+import { move, reorder } from '../utils';
 import { useDraggingState } from '../store/DraggingProvider';
+import { BOARD_ID } from '../constants/dnd';
 
 export default function DragDropProvider({ children }: PropsWithChildren) {
   const { itemCollection, setItemCollection } = useItems();
-  const { dragging, setDragging } = useDraggingState();
+  const { setDragging, isEvenIndexCrossBoardDrag, isFirstToThird } =
+    useDraggingState();
 
-  const onDragStart: OnDragStartResponder = ({ source }) => {
-    setDragging(source.droppableId);
+  const onDragStart: OnDragStartResponder = (dragging) => {};
+
+  const onDragUpdate: OnDragUpdateResponder = (dragging) => {
+    setDragging(dragging);
   };
 
   const onDragEnd: OnDragEndResponder = ({ destination, source }) => {
     setDragging(null);
 
     if (!destination) return;
+    if (isEvenIndexCrossBoardDrag || isFirstToThird) return;
 
     if (
       source.droppableId === BOARD_ID.fisrt &&
-      destination.droppableId === BOARD_ID.third
+      destination?.droppableId === BOARD_ID.third
     )
       return;
 
     if (source.droppableId !== destination.droppableId) {
       const srcItem = itemCollection[source.droppableId];
-      const target = srcItem[source.index];
       const destItem = itemCollection[destination.droppableId];
 
-      const newSrcItem = srcItem.filter((item) => item !== target);
-      const newDestItem = [
-        ...destItem.slice(0, destination.index),
-        target,
-        ...destItem.slice(destination.index),
-      ];
+      const movedItemCollection = move({
+        source: srcItem,
+        destination: destItem,
+        droppableDestination: destination,
+        droppableSource: source,
+      });
+
       setItemCollection({
         ...itemCollection,
-        [source.droppableId]: newSrcItem,
-        [destination.droppableId]: newDestItem,
+        ...movedItemCollection,
       });
       return;
     }
@@ -57,7 +61,11 @@ export default function DragDropProvider({ children }: PropsWithChildren) {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+    <DragDropContext
+      onDragEnd={onDragEnd}
+      onDragUpdate={onDragUpdate}
+      onDragStart={onDragStart}
+    >
       {children}
     </DragDropContext>
   );

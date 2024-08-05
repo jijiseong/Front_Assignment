@@ -1,5 +1,7 @@
-import { ReactNode, useId } from 'react';
+import { ReactNode } from 'react';
 import { Droppable, DroppableProps } from 'react-beautiful-dnd';
+import { useDraggingState } from '../store/DraggingProvider';
+import { BOARD_BG_CLASS } from '../constants/color';
 
 interface Props extends Omit<DroppableProps, 'children'> {
   className?: string;
@@ -14,9 +16,7 @@ function DroppableBoard({ children, className, ...props }: Props) {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`h-min bg-gray-100 w-40 px-2 py-4 rounded overflow-hidden ${
-              className ? className : ''
-            }`}
+            className={`h-min  w-40 px-2 py-4 rounded overflow-hidden ${BOARD_BG_CLASS.default}`}
           >
             {children}
             {provided.placeholder}

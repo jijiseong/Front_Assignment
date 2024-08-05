@@ -1,11 +1,19 @@
 import { ReactNode } from 'react';
 import { Draggable, DraggableProps } from 'react-beautiful-dnd';
+import { ITEM_BG_CLASS } from '../constants/color';
 
 interface Props extends Omit<DraggableProps, 'children'> {
   children: ReactNode;
+  className?: string;
+  error?: boolean;
 }
 
-function DraggableItem({ children, ...props }: Props) {
+function DraggableItem({
+  error = false,
+  className,
+  children,
+  ...props
+}: Props) {
   return (
     <Draggable {...props}>
       {(provided, snapshot) => (
@@ -13,9 +21,13 @@ function DraggableItem({ children, ...props }: Props) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={`bg-blue-100 flex justify-center items-center rounded py-6 mb-2 h-[40px] ${
-            snapshot.isDragging ? 'bg-blue-300' : 'bg-gray-100'
-          }`}
+          className={`flex justify-center items-center rounded py-6 mb-2 h-[40px] ${
+            snapshot.isDragging
+              ? error
+                ? ITEM_BG_CLASS.error
+                : ITEM_BG_CLASS.active
+              : ITEM_BG_CLASS.default
+          } `}
         >
           {children}
         </div>
