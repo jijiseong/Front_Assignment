@@ -1,8 +1,8 @@
 import { useId } from 'react';
-import { useItems } from '../store';
+import { useItems } from '../store/ItemProvider';
 import DroppableBoard from '../components/DroppableBoard';
 import DraggableItem from '../components/DraggableItem';
-import { BOARD_ID } from '../constants/dnd-id';
+import { BOARD_ID } from '../constants/dnd';
 
 export default function SecondBoard() {
   const { itemCollection } = useItems();

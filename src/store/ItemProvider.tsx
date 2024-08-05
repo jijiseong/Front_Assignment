@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react';
 import { ItemType } from '../type';
-import { BOARD_ID } from '../constants/dnd-id';
+import { BOARD_ID } from '../constants/dnd';
 
 type ItemCollectionType = Record<string, ItemType[]>;
 

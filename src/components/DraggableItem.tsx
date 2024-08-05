@@ -13,8 +13,8 @@ function DraggableItem({ children, ...props }: Props) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={`bg-blue-100  h-[40px] ${
-            snapshot.isDragging ? 'bg-blue-100' : 'bg-gray-100'
+          className={`bg-blue-100 flex justify-center items-center rounded py-6 mb-2 h-[40px] ${
+            snapshot.isDragging ? 'bg-blue-300' : 'bg-gray-100'
           }`}
         >
           {children}

@@ -1,13 +1,32 @@
 import { PropsWithChildren } from 'react';
-import { DragDropContext, OnDragEndResponder } from 'react-beautiful-dnd';
-import { useItems } from '../store';
+import {
+  DragDropContext,
+  OnDragEndResponder,
+  OnDragStartResponder,
+} from 'react-beautiful-dnd';
+import { useItems } from '../store/ItemProvider';
 import { reorder } from '../utils';
+import { BOARD_ID } from '../constants/dnd';
+import { useDraggingState } from '../store/DraggingProvider';
 
 export default function DragDropProvider({ children }: PropsWithChildren) {
   const { itemCollection, setItemCollection } = useItems();
+  const { dragging, setDragging } = useDraggingState();
+
+  const onDragStart: OnDragStartResponder = ({ source }) => {
+    setDragging(source.droppableId);
+  };
 
   const onDragEnd: OnDragEndResponder = ({ destination, source }) => {
+    setDragging(null);
+
     if (!destination) return;
+
+    if (
+      source.droppableId === BOARD_ID.fisrt &&
+      destination.droppableId === BOARD_ID.third
+    )
+      return;
 
     if (source.droppableId !== destination.droppableId) {
       const srcItem = itemCollection[source.droppableId];
@@ -37,5 +56,9 @@ export default function DragDropProvider({ children }: PropsWithChildren) {
     setItemCollection({ ...itemCollection, [source.droppableId]: newItems });
   };
 
-  return <DragDropContext onDragEnd={onDragEnd}>{children}</DragDropContext>;
+  return (
+    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      {children}
+    </DragDropContext>
+  );
 }

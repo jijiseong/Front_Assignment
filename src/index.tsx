@@ -2,21 +2,24 @@ import './main.css';
 import { createRoot } from 'react-dom/client';
 
 import FirstBoard from './blocks/FirstBoard';
-import ItemProvider from './store';
+import ItemProvider from './store/ItemProvider';
 import DragDropProvider from './components/DragDropProvider';
 import SecondBoard from './blocks/SecondBoard';
 import ThirdBoard from './blocks/ThirdBoard';
+import DraggingProvider from './store/DraggingProvider';
 
 function App() {
   return (
     <ItemProvider>
-      <DragDropProvider>
-        <div className='flex gap-4'>
-          <FirstBoard />
-          <SecondBoard />
-          <ThirdBoard />
-        </div>
-      </DragDropProvider>
+      <DraggingProvider>
+        <DragDropProvider>
+          <div className='flex gap-4'>
+            <FirstBoard />
+            <SecondBoard />
+            <ThirdBoard />
+          </div>
+        </DragDropProvider>
+      </DraggingProvider>
     </ItemProvider>
   );
 }
