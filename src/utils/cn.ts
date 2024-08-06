@@ -3,11 +3,11 @@ const cn = (...classNamesArray: Array<string | undefined>) => {
 
   const mergedClassName: string[] = [];
 
-  const prefixExist: string[] = [];
+  const usedPrefixes: string[] = [];
 
   classNames.reverse().forEach((className) => {
     const prefix = className.split('-')[0];
-    if (prefixExist.includes(prefix)) return;
+    if (usedPrefixes.includes(prefix)) return;
     mergedClassName.push(className);
   });
 

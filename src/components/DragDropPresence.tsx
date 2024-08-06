@@ -17,8 +17,6 @@ export default function DragDropPresence({ children }: PropsWithChildren) {
   const { setDragging, isEvenIndexCrossBoardDrag, isFirstToThird } =
     useDraggingState();
 
-  console.log(selections);
-
   const controllSelectionOrder: OnBeforeDragStartResponder = (dragging) => {
     if (selections.includes(dragging.draggableId)) {
       setSelections((old) => {

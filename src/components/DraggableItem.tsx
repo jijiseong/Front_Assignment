@@ -32,6 +32,16 @@ function DraggableItem({
     return '';
   };
 
+  const controllSelection = () => {
+    setSelections((old) => {
+      const oldIds = old.map((id) => id);
+      if (oldIds.includes(props.draggableId)) {
+        return old.filter((id) => id !== props.draggableId);
+      }
+      return [...old, props.draggableId];
+    });
+  };
+
   return (
     <Draggable {...props}>
       {(provided, snapshot) => (
@@ -40,7 +50,7 @@ function DraggableItem({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           className={cn(
-            'flex  justify-center items-center rounded mb-2 h-[40px]',
+            'flex justify-center items-center rounded mb-2 h-[40px]',
             snapshot.isDragging
               ? error
                 ? ITEM_BG_CLASS.error
@@ -49,15 +59,7 @@ function DraggableItem({
             getSelectedClass(props.draggableId),
             className
           )}
-          onClick={() => {
-            setSelections((old) => {
-              const oldIds = old.map((id) => id);
-              if (oldIds.includes(props.draggableId)) {
-                return old.filter((id) => id !== props.draggableId);
-              }
-              return [...old, props.draggableId];
-            });
-          }}
+          onClick={controllSelection}
         >
           {children}
         </div>
