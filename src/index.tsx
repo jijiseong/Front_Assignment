@@ -3,23 +3,26 @@ import { createRoot } from 'react-dom/client';
 
 import FirstBoard from './blocks/FirstBoard';
 import ItemProvider from './store/ItemProvider';
-import DragDropProvider from './components/DragDropProvider';
+import DragDropPresence from './components/DragDropPresence';
 import SecondBoard from './blocks/SecondBoard';
 import ThirdBoard from './blocks/ThirdBoard';
 import DraggingProvider from './store/DraggingProvider';
+import SelectionsProvider from './store/SelectionsProvider';
 
 function App() {
   return (
     <ItemProvider>
-      <DraggingProvider>
-        <DragDropProvider>
-          <div className='flex gap-4'>
-            <FirstBoard />
-            <SecondBoard />
-            <ThirdBoard />
-          </div>
-        </DragDropProvider>
-      </DraggingProvider>
+      <SelectionsProvider>
+        <DraggingProvider>
+          <DragDropPresence>
+            <div className='flex gap-4'>
+              <FirstBoard />
+              <SecondBoard />
+              <ThirdBoard />
+            </div>
+          </DragDropPresence>
+        </DraggingProvider>
+      </SelectionsProvider>
     </ItemProvider>
   );
 }

@@ -1,4 +1,3 @@
-import { useId } from 'react';
 import { useItems } from '../store/ItemProvider';
 import DroppableBoard from '../components/DroppableBoard';
 import DraggableItem from '../components/DraggableItem';

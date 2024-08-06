@@ -1,21 +1,43 @@
 import { PropsWithChildren } from 'react';
 import {
   DragDropContext,
+  OnBeforeDragStartResponder,
   OnDragEndResponder,
-  OnDragStartResponder,
   OnDragUpdateResponder,
 } from 'react-beautiful-dnd';
 import { useItems } from '../store/ItemProvider';
-import { move, reorder } from '../utils';
+import { move, reorder } from '../utils/dnd';
 import { useDraggingState } from '../store/DraggingProvider';
 import { BOARD_ID } from '../constants/dnd';
+import { useSelections } from '../store/SelectionsProvider';
 
-export default function DragDropProvider({ children }: PropsWithChildren) {
+export default function DragDropPresence({ children }: PropsWithChildren) {
   const { itemCollection, setItemCollection } = useItems();
+  const { selections, setSelections } = useSelections();
   const { setDragging, isEvenIndexCrossBoardDrag, isFirstToThird } =
     useDraggingState();
 
-  const onDragStart: OnDragStartResponder = (dragging) => {};
+  console.log(selections);
+
+  const controllSelectionOrder: OnBeforeDragStartResponder = (dragging) => {
+    if (selections.includes(dragging.draggableId)) {
+      setSelections((old) => {
+        const targetIndex = old.findIndex(
+          (selectionId) => selectionId === dragging.draggableId
+        );
+        const reordered = reorder(old, targetIndex, 0);
+        return reordered;
+      });
+      return;
+    }
+
+    if (selections.length === 0) {
+      setSelections([dragging.draggableId]);
+      return;
+    }
+
+    setSelections([dragging.draggableId]);
+  };
 
   const onDragUpdate: OnDragUpdateResponder = (dragging) => {
     setDragging(dragging);
@@ -23,6 +45,7 @@ export default function DragDropProvider({ children }: PropsWithChildren) {
 
   const onDragEnd: OnDragEndResponder = ({ destination, source }) => {
     setDragging(null);
+    setSelections([]);
 
     if (!destination) return;
     if (isEvenIndexCrossBoardDrag || isFirstToThird) return;
@@ -36,12 +59,17 @@ export default function DragDropProvider({ children }: PropsWithChildren) {
     if (source.droppableId !== destination.droppableId) {
       const srcItem = itemCollection[source.droppableId];
       const destItem = itemCollection[destination.droppableId];
-
       const movedItemCollection = move({
-        source: srcItem,
-        destination: destItem,
-        droppableDestination: destination,
-        droppableSource: source,
+        source: {
+          original: srcItem,
+          droppableId: source.droppableId,
+          ids: selections,
+        },
+        destination: {
+          original: destItem,
+          droppableId: destination.droppableId,
+          index: destination.index,
+        },
       });
 
       setItemCollection({
@@ -64,7 +92,7 @@ export default function DragDropProvider({ children }: PropsWithChildren) {
     <DragDropContext
       onDragEnd={onDragEnd}
       onDragUpdate={onDragUpdate}
-      onDragStart={onDragStart}
+      onBeforeDragStart={controllSelectionOrder}
     >
       {children}
     </DragDropContext>

@@ -25,6 +25,7 @@ export function useDraggingState() {
   if (!context) throw new Error('Dragging state context is undefined');
 
   const { dragging } = context;
+
   const isEvenIndexCrossBoardDrag =
     (!!dragging &&
       (dragging.source.index + 1) % 2 === 0 &&
